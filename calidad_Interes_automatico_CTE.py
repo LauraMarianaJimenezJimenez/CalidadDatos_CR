@@ -13,14 +13,14 @@ warnings.filterwarnings("ignore")
 # Se solicita la fecha del archivo para la creación del path que leera el archivo
 
 try:
+
 	# Input
 	print("Inserte la fecha de la fuente que desea procesar (yyyymmdd)")
 	data_date = input()
 
 	print('Procesando...')
 
-	# file = os.path.abspath("../Fuentes_iniciales/ManualTransactions_"+ data_date "_.xls")
-	file = os.path.abspath("../Fuentes_iniciales/Interes_automatico_AHO_" + data_date + ".xlsx")
+	file = os.path.abspath("../Fuentes_iniciales/Interes_automatico_CTE_" + data_date + ".xlsx")
 
 	# Raed file
 	df = pd.read_excel(file, header=None)
@@ -36,15 +36,17 @@ try:
 		df = df.dropna(how='all', axis=1)
 
 		try:
+		
 			# Delete withespace in headers
 			df = df.rename(columns=lambda x: x.strip())
 			# Take specific columns
-			df = df[['en_ente', 'en_linea_neg_cv', 'en_subsegmento', 'ah_cta_banco', 'hm_moneda', 'hm_fecha', 'hm_valor', 'hm_referencia', 'hm_signo']]
+			df = df[['en_ente', 'en_linea_neg_cv', 'en_subsegmento', 'cc_cta_banco', 'hm_moneda', 'hm_fecha', 'hm_valor', 'hm_referencia', 'hm_signo']]
 			# Remove duplicate records
 			df = df.drop_duplicates()
 
-			try: 
-				path = os.path.abspath('../Informes/Informe_Interes_automatico_AHO_' + data_date + '.txt')
+			try:
+
+				path = os.path.abspath('../Informes/Informe_Interes_automatico_CTE_' + data_date + '.txt')
 
 				f = open(path,"w+")
 				f.write(file)
@@ -99,13 +101,15 @@ try:
 					# hm_moneda		
 					if i == 4:
 						monedas = ['0', '20', '6']
-						if (~df[column].isin(monedas).all()):
+						if (~df[column].isin(monedas).any()):
 							f.write("\nHay monedas que no corresponden a 0, 6 o 20")
 
 					# hm_fecha
 					if i == 5:
-						#df[column] = pd.to_datetime(df[column])
-						#df[column] = np.where(df[column].str.contains('/'), pd.to_datetime(df[column], errors='coerce').dt.strftime('%d/%m/%Y'), pd.to_datetime(df[column], errors='coerce', dayfirst=True).dt.strftime('%d/%m/%Y'))
+						df[column] = df[column].astype(str)
+						df[column] = pd.to_datetime(df[column])
+						df[column] = df[column].astype(str)
+						df[column] = np.where(df[column].str.contains('/'), pd.to_datetime(df[column], errors='coerce').dt.strftime('%d/%m/%Y'), pd.to_datetime(df[column], errors='coerce', dayfirst=True).dt.strftime('%d/%m/%Y'))
 						df[column] = df[column].astype(str)
 						if (df[column].str.slice(3, 5) != data_date[4:6]).any():
 							f.write("\nHay fechas que no corresponden para el mes de ejecución")
@@ -125,7 +129,7 @@ try:
 					# hm_signo
 					if i == 8:
 						signo = ['C']
-						if (~df[column].isin(linea_neg).all()):
+						if (~df[column].isin(linea_neg).any()):
 							f.write("\nHay signos que no corresponden a 'C' ")
 
 					i = i + 1 
@@ -136,16 +140,17 @@ try:
 				df = df.fillna('')
 				df = df.replace('nan', '', regex=False)
 
-				# Validation flag, unix time
+				# Generación del flag de validación, marcación de tiempo unix
 				date_time = datetime.datetime.now()      
 				unix_time = time.mktime(date_time.timetuple())
 				unix_time = str(unix_time)
 				unix_time = unix_time.split('.')[0]
 
 				# Se escribe un nuevo archivo con la fuente procesada 
-				file = os.path.abspath('../Fuentes_procesadas/Interes_automatico_AHO_' + data_date + '_' + unix_time + '.xlsx')
+
+				file = os.path.abspath('../Fuentes_procesadas/Interes_automatico_CTE_' + data_date + '_' + unix_time + '.xlsx')
 				writer = ExcelWriter(file)
-				df.to_excel(writer, 'AHO', index=False)
+				df.to_excel(writer, 'CTE', index=False)
 				writer.save()
 
 				print("Fuentes procesada con exito")
