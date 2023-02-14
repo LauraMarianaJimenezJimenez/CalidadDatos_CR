@@ -123,7 +123,7 @@ try:
 					# Solo valor 0 y valor 20
 					if i == 4:
 						monedas = ['0', '20']
-						if (~df[column].isin(monedas).any()):
+						if (~df[column].isin(monedas).all()):
 							f.write("\nHay monedas que no corresponden a 0 o 20")
 
 					# Causa
@@ -143,7 +143,16 @@ try:
 						df[column] = df[column].astype(str)
 						if (df[column] == 'ND').any():
 							f.write("\nHay valores ND en columna Producto Vista # cuenta")
-							df[column] = df[column].str.replace('ND', '', regex=False)
+
+
+						for items in df['Producto Vista # cuenta'].iteritems():
+							if(items[1] == 'ND'):
+								valor = 'ND'
+								df.loc[items[0]][7] = valor
+
+							if(items[1] != 'ND'):
+								text = df.loc[items[0]][7]
+								df.loc[items[0]][7] = re.search('[^0-9\\s]+', text)
 
 					# Nombre Producto
 					if i == 8:
@@ -176,6 +185,7 @@ try:
 				writer.save()
 
 				print("Fuentes procesada con exito")
+				
 			except:
 				print(' Ha ocurrido un error, por favor verifique su fuente')
 		except:
