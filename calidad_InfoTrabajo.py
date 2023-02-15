@@ -159,7 +159,7 @@ try:
 			except:
 				print(' Ha ocurrido un error, por favor verifique su fuente')
 		except:
-			print(' Hay un error en los nombres de las columnas, valide que sean [Fecha, Tarjeta, Monto, Moneda, Tipo Tarjeta, Tipo Cuenta], teniendo en cuenta el orden, las mayusculas y minusculas')
+			print(' Hay un error en los nombres de las columnas, valide que sean [ID, BIN, NOMBRE_BIN, PRODUCTO, TIPO, activo, IdProducto, PRODUCTO2], teniendo en cuenta el orden, las mayusculas y minusculas')
 	except:
 		print(' Ha ocurrido un error, por favor verifique su fuente')
 except:
