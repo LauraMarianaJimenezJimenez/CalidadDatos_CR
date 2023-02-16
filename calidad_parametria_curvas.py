@@ -131,6 +131,8 @@ def captacion_col():
 					date_time = datetime.datetime.now()      
 					unix_time = time.mktime(date_time.timetuple())
 					unix_time = str(unix_time)
+					unix_time = unix_time.split('.')[0]
+
 
 					# Se escribe un nuevo archivo con la fuente procesada 
 
@@ -271,6 +273,7 @@ def captacion_dol():
 					date_time = datetime.datetime.now()      
 					unix_time = time.mktime(date_time.timetuple())
 					unix_time = str(unix_time)
+					unix_time = unix_time.split('.')[0]
 
 					# Se escribe un nuevo archivo con la fuente procesada 
 
@@ -458,6 +461,7 @@ def colocacion_col():
 					date_time = datetime.datetime.now()      
 					unix_time = time.mktime(date_time.timetuple())
 					unix_time = str(unix_time)
+					unix_time = unix_time.split('.')[0]
 
 					# Se escribe un nuevo archivo con la fuente procesada 
 
@@ -645,6 +649,8 @@ def colocacion_dol():
 					date_time = datetime.datetime.now()      
 					unix_time = time.mktime(date_time.timetuple())
 					unix_time = str(unix_time)
+					unix_time = unix_time.split('.')[0]
+
 
 					# Se escribe un nuevo archivo con la fuente procesada 
 
@@ -783,6 +789,8 @@ def PIPCA_col():
 					date_time = datetime.datetime.now()      
 					unix_time = time.mktime(date_time.timetuple())
 					unix_time = str(unix_time)
+					unix_time = unix_time.split('.')[0]
+
 
 					# Se escribe un nuevo archivo con la fuente procesada 
 
@@ -918,6 +926,8 @@ def PIPCA_dol():
 					date_time = datetime.datetime.now()      
 					unix_time = time.mktime(date_time.timetuple())
 					unix_time = str(unix_time)
+					unix_time = unix_time.split('.')[0]
+
 
 					# Se escribe un nuevo archivo con la fuente procesada 
 
