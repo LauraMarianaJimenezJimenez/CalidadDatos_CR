@@ -71,6 +71,15 @@ try:
 					f.write(text)
 					df[column] = df[column].astype(str)
 
+				# Changes for all columns
+
+				#Remove carring return
+				df = df.replace({r'\\r': ' '}, regex=True)
+				#Remove line breaks
+				df = df.replace(r'\s+|\\n', ' ', regex=True)
+				#Remove pipelines, single quote, semicolon
+				df = df.replace(r'\| +|\' +|; +|´ +|\|', '', regex=True)
+
 				i = 0
 				for column in df:
 					# Fecha as date_origin or date_disb
@@ -130,7 +139,7 @@ try:
 			except:
 				print(' Ha ocurrido un error, por favor verifique su fuente')
 		except:
-			print(' Hay un error en los nombres de las columnas, valide que sean [ID, BIN, NOMBRE_BIN, PRODUCTO, TIPO, activo, IdProducto, PRODUCTO2], teniendo en cuenta el orden, las mayusculas y minusculas')
+			print(' Hay un error en los nombres de las columnas, valide que sean [Trade Date, Time, CCY1, Notional1, Client Price, Close Price, Client Type, Reference Price, PL CM, PL GBM, Total PL, PL CM2, PL GBM2, Total PL2, PL COL CB, Blank, Client Type 2, Criterio, Subsegmento, Ente, CCY, Type], teniendo en cuenta el orden, las mayusculas y minusculas')
 	except:
 		print(' Ha ocurrido un error, por favor verifique su fuente')
 except:
