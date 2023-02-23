@@ -89,7 +89,7 @@ try:
 				# Tratamientos especificos para campos puntuales del MIS
 
 				i = 0
-				numbers = [ 8, 10, 11, 13, 20, 22, 45, 53, 54]
+				numbers = [ 8, 10, 11, 13, 20, 22, 39, 42, 45, 53, 54]
 				for column in df:
 					# Fecha as date_origin or date_disb
 					# Formato MM/DD/AAAA
@@ -118,7 +118,7 @@ try:
 						df[column] = df[column].astype(str)
 						df[column] = df[column].str.replace('[^0-9\\s]+', '', regex=True)
 
-					if (i in numbers or i > 24 and i < 36 or i > 41 and i < 46 or i > 47 and i < 49):
+					if (i in numbers or i > 24 and i < 36 or i > 44 and i < 46 or i > 47 and i < 49):
 						df[column] = df[column].fillna(0)
 						df[column] = df[column].astype(str)
 						df[column] = df[column].str.replace('[^0-9-,.\\s]+', '', regex=True)
@@ -134,7 +134,17 @@ try:
 						if (~df[column].isin(subproductos).any()):
 							f.write("\nHay subproductos que no corresponden en la columna client type")
 					
-					if (i == 44):
+					# CM  y GM
+					if i == 40 or i == 41:
+						df[column] = df[column].astype(str)
+						df[column] = df[column].str.replace('[^0-9-,.\\s]+', '', regex=True)
+						df[column] = df[column].str.replace(',', '.', regex=False)
+						df[column] = df[column].fillna('0')
+						df[column] = df[column].replace('nan', '0', regex=False)
+						df[column] = df[column].replace('', '0', regex=False)
+						df[column] = df[column].astype(float)
+
+					if i == 44:	
 						df[column] = df[column].astype(str)
 						df[column] = df[column].str.replace('[^0-9%.,\\s]+', '', regex=True)
 						df[column] = df[column].str.strip()
