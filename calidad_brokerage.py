@@ -137,9 +137,12 @@ try:
 						df[column] = df[column].astype(str)
 						df[column] = df[column].str.replace('[^0-9-,.\\s]+', '', regex=True)
 						df[column] = df[column].str.replace(',', '.', regex=False)
+						df[column] = df[column].fillna('0')
+						df[column] = df[column].replace('nan', '0', regex=False)
+						df[column] = df[column].replace('', '0', regex=False)
 						df[column] = df[column].astype(float)
 
-						if (df[column] < 0).any():
+						if (df[column] <= 0).any():
 							f.write("\nHay importes negativos en la columna Brok_Lob")
 
 					# brok_GM as pl importe de ROF para tesoreria		
@@ -148,9 +151,12 @@ try:
 						df[column] = df[column].astype(str)
 						df[column] = df[column].str.replace('[^0-9-,.\\s]+', '', regex=True)
 						df[column] = df[column].str.replace(',', '.', regex=False)
+						df[column] = df[column].fillna('0')
+						df[column] = df[column].replace('nan', '0', regex=False)
+						df[column] = df[column].replace('', '0', regex=False)
 						df[column] = df[column].astype(float)
 
-						if (df[column] < 0).any():
+						if (df[column] <= 0).any():
 							f.write("\nHay importes negativos en la columna Brok_GM")
 
 
