@@ -99,10 +99,13 @@ try:
 							f.write("\nHay subproductos que no corresponden en la columna client type")
 
 					if (i > 2 and i < 6 or i > 6 and i < 15):
-						df[column] = df[column].fillna(0)
 						df[column] = df[column].astype(str)
 						df[column] = df[column].str.replace('[^0-9-,.\\s]+', '', regex=True)
-						df[column] = df[column].str.replace('.', ',', regex=False)
+						df[column] = df[column].str.replace(',', '.', regex=False)
+						df[column] = df[column].fillna('0')
+						df[column] = df[column].replace('nan', '0', regex=False)
+						df[column] = df[column].replace('', '0', regex=False)
+						df[column] = df[column].astype(float)
 
 					# Cliente as idf_cli
 					# Solo datos numéricos
