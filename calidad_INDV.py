@@ -134,8 +134,13 @@ try:
 					# ta_saldo_principal
 					if i == 5:
 						df[column] = df[column].astype(str)
-						df[column] = df[column].str.replace('[^0-9,.\\s]+', '', regex=True)
+						df[column] = df[column].str.replace('[^0-9-,.\\s]+', '', regex=True)
 						df[column] = df[column].str.replace(',', '.', regex=False)
+						df[column] = df[column].fillna('0')
+						df[column] = df[column].replace('nan', '0', regex=False)
+						df[column] = df[column].replace('', '0', regex=False)
+						df[column] = df[column].astype(float)
+
 					# ta_indica_intra_extra
 					if i == 6:
 						df[column] = df[column].astype(str)
@@ -147,7 +152,18 @@ try:
 					if i == 7:
 						df[column] = df[column].astype(str)
 						df[column] = df[column].str.replace('[^0-9,.\\s]+', '', regex=True)
-						df[column] = df[column].str.replace('.', ',', regex=False)
+						df[column] = df[column].str.replace(',', '.', regex=False)
+						df[column] = df[column].fillna('0')
+						df[column] = df[column].replace('nan', '0', regex=False)
+						df[column] = df[column].replace('', '0', regex=False)
+						df[column] = df[column].str.replace(' ', '', regex=False)
+						df[column] = df[column].str.strip()
+						df[column] = df[column].astype(float)
+
+
+						if (df[column] >= 100).any():
+							f.write("\nHay tasas con porcentaje mayor que 100%")
+							
 
 					# ta_fecha_corte
 					if i == 8:
@@ -159,12 +175,12 @@ try:
 					# ta_id_deudor
 					if i == 9:
 						df[column] = df[column].str.strip()
-						df[column] = df[column].str.replace('[^0-9-\\s]+', '', regex=True)
+						df[column] = df[column].str.replace('[^0-9\\s]+', '', regex=True)
 						for items in df['ta_id_deudor'].iteritems():
-							if(len(items[1]) > 25):
+							if(len(items[1]) > 19):
 								f.write("\nhay identificación de deudor con longitud mayor de 19")
 
-							elif (len(items[1]) < 25):
+							elif (len(items[1]) < 19):
 								f.write("\nhay identificación de operaciones con longitud menor de 19")
 								break
 
@@ -187,8 +203,12 @@ try:
 					# Ajuste de intereses
 					if i == 12:
 						df[column] = df[column].astype(str)
-						df[column] = df[column].str.replace('[^0-9,.\\s]+', '', regex=True)
-						df[column] = df[column].str.replace('.', ',', regex=False)
+						df[column] = df[column].str.replace('[^0-9-,.\\s]+', '', regex=True)
+						df[column] = df[column].str.replace(',', '.', regex=False)
+						df[column] = df[column].fillna('0')
+						df[column] = df[column].replace('nan', '0', regex=False)
+						df[column] = df[column].replace('', '0', regex=False)
+						df[column] = df[column].astype(float)
 
 					# Tipo de tarjeta
 					if i == 13:
