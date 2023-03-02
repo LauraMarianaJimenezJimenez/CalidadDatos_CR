@@ -65,7 +65,6 @@ try:
 					f.write(": ")
 					text = str(df[column].isnull().sum())
 					f.write(text)
-					df[column] = df[column].astype(str)
 
 				#Remove carring return
 				df = df.replace({r'\\r': ' '}, regex=True)
@@ -117,8 +116,11 @@ try:
 					# hm_valor
 					if i == 6:
 						df[column] = df[column].astype(str)
-						df[column] = df[column].str.replace('[^0-9,.\\s]+', '', regex=True)
+						df[column] = df[column].str.replace('[^Ee0-9-,.\\s]+', '', regex=True)
 						df[column] = df[column].str.replace(',', '.', regex=False)
+						df[column] = df[column].fillna('0')
+						df[column] = df[column].replace('nan', '0', regex=False)
+						df[column] = df[column].replace('', '0', regex=False)
 						df[column] = df[column].astype(float)
 
 					# hm_referencia
@@ -128,8 +130,9 @@ try:
 
 					# hm_signo
 					if i == 8:
+						df[column] = df[column].astype(str)
 						signo = ['C']
-						if (~df[column].isin(linea_neg).any()):
+						if (~df[column].isin(linea_neg).all()):
 							f.write("\nHay signos que no corresponden a 'C' ")
 
 					i = i + 1 
@@ -155,11 +158,16 @@ try:
 
 				print("Fuentes procesada con exito")
 
-			except:
+			except Exception as e:
 				print(' Ha ocurrido un error, por favor verifique su fuente')
+				print(e)
+
 		except:
 			print(' Hay un error en los nombres de las columnas, valide que sean [en_ente, en_linea_neg_cv, en_subsegmento, ah_cta_banco, hm_moneda, hm_fecha, hm_valor, hm_referencia, hm_signo], teniendo en cuenta el orden, las mayusculas y minusculas')
-	except:
+
+	except Exception as e:
 		print(' Ha ocurrido un error, por favor verifique su fuente')
+		print(e)
+
 except:
 	print(" Hay un error en la fecha ingresada o en el nombre del archivo")

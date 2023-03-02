@@ -68,7 +68,6 @@ try:
 					f.write(": ")
 					text = str(df[column].isnull().sum())
 					f.write(text)
-					df[column] = df[column].astype(str)
 
 				#Remove carring return
 				df = df.replace({r'\\r': ' '}, regex=True)
@@ -119,12 +118,16 @@ try:
 					# Monto
 					if i == 4:
 						df[column] = df[column].astype(str)
-						df[column] = df[column].str.replace('[^0-9,.\\s]+', '', regex=True)
+						df[column] = df[column].str.replace('[^Ee0-9-,.\\s]+', '', regex=True)
 						df[column] = df[column].str.replace(',', '.', regex=False)
-						df[column] = df[column].astype(float)	
+						df[column] = df[column].fillna('0')
+						df[column] = df[column].replace('nan', '0', regex=False)
+						df[column] = df[column].replace('', '0', regex=False)
+						df[column] = df[column].astype(float)
 
 					# Moneda
 					if i == 5:
+						df[column] = df[column].astype(str)
 						moneda = ['colones', 'dolares']
 						if (~df[column].isin(moneda).all()):
 							f.write("\nHay tipos de moneda que no corresponden a colones o dolares")
@@ -132,12 +135,16 @@ try:
 					# Dolariza
 					if i == 6:
 						df[column] = df[column].astype(str)
-						df[column] = df[column].str.replace('[^0-9,.\\s]+', '', regex=True)
+						df[column] = df[column].str.replace('[^Ee0-9-,.\\s]+', '', regex=True)
 						df[column] = df[column].str.replace(',', '.', regex=False)
-						df[column] = df[column].astype(float)	
+						df[column] = df[column].fillna('0')
+						df[column] = df[column].replace('nan', '0', regex=False)
+						df[column] = df[column].replace('', '0', regex=False)
+						df[column] = df[column].astype(float)
 
 					# Fecha
 					if i == 7:
+						df[column] = df[column].astype(str)
 						df[column] = np.where(df[column].str.contains('/'), pd.to_datetime(df[column], errors='coerce').dt.strftime('%d/%m/%Y'), pd.to_datetime(df[column], errors='coerce', dayfirst=True).dt.strftime('%d/%m/%Y'))
 						df[column] = df[column].astype(str)
 						if (df[column].str.slice(3, 5) != data_date[4:6]).any():
@@ -157,7 +164,7 @@ try:
 					if i == 10:
 						df[column] = df[column].astype(str)
 						df[column] = df[column].str.replace('[^a-zA-Z\\s]+', '', regex=True)
-						df = df.replace('', '-', regex=False)
+						df[column] = df[column].str.replace('', '-', regex=False)
 
 
 						for items in df['Usuario'].iteritems():
@@ -166,7 +173,7 @@ try:
 								df.loc[items[0]][10] = valor
 
 								if (str(df.loc[items[0]][10]) != '-'):
-									f.write("\nPara usuario Digital hay puesto deiferente de '-'")
+									f.write("\nPara usuario Digital hay puesto diferente de '-'")
 
 					# Canal de Ventas
 					if i == 11:
@@ -180,6 +187,7 @@ try:
 
 					# PLAN2
 					if i == 13:
+						df[column] = df[column].astype(str)
 						plan = ['Intra', 'Extra']
 						if (~df[column].isin(plan).all()):
 							f.write("\nHay tipos de plan que no corresponden a Intra o Extra")
@@ -212,12 +220,17 @@ try:
 
 				print("Fuentes procesada con exito")
 
-			except:
+			except Exception as e:
 				print(' Ha ocurrido un error, por favor verifique su fuente')
+				print(e)
+
 		except:
 			print(' Hay un error en los nombres de las columnas, valide que sean [COD, DESCRIP, AFECTACION, Signo, Desc_IncCom_CBO], teniendo en cuenta el orden, las mayusculas y minusculas')
-	except:
+
+	except Exception as e:
 		print(' Ha ocurrido un error, por favor verifique su fuente')
+		print(e)
+
 except:
 	print(" Hay un error en la fecha ingresada o en el nombre del archivo")
 

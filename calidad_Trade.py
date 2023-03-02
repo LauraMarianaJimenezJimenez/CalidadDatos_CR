@@ -62,7 +62,6 @@ try:
 					f.write(": ")
 					text = str(df[column].isnull().sum())
 					f.write(text)
-					df[column] = df[column].astype(str)
 
 				#Remove carring return
 				df = df.replace({r'\\r': ' '}, regex=True)
@@ -76,6 +75,7 @@ try:
 					# Mes 
 					# Formato dd/mm/yyyy y se valida que todos los meses correspondan 
 					if i == 0:
+						df[column] = df[column].astype(str)
 						df[column] = np.where(df[column].str.contains('/'), pd.to_datetime(df[column], errors='coerce').dt.strftime('%d/%m/%Y'), pd.to_datetime(df[column], errors='coerce', dayfirst=True).dt.strftime('%d/%m/%Y'))
 						df[column] = df[column].astype(str)
 						if (df[column].str.slice(3, 5) != data_date[4:6]).any():
@@ -89,18 +89,23 @@ try:
 					# Amortización del mes
 					if i == 2:
 						df[column] = df[column].astype(str)
-						df[column] = df[column].str.replace('[^0-9,.\\s]+', '', regex=True)
+						df[column] = df[column].str.replace('[^Ee0-9-,.\\s]+', '', regex=True)
 						df[column] = df[column].str.replace(',', '.', regex=False)
+						df[column] = df[column].fillna('0')
+						df[column] = df[column].replace('nan', '0', regex=False)
+						df[column] = df[column].replace('', '0', regex=False)
 						df[column] = df[column].astype(float)
 
 					# Producto
 					if i == 3:
+						df[column] = df[column].astype(str)
 						productos = ['Garantias Colones', 'Garantias Colones', 'Garantias Dólares', 'Cartas de Crédito']
 						if (~df[column].isin(productos).all()):
 							f.write("\nHay productos que no corresponden a 'Garantias Colones', 'Garantias Colones', 'Garantias Dólares', 'Cartas de Crédito' ")
 						
 
 					if i == 4:
+						df[column] = df[column].astype(str)
 						for items in df['Producto'].iteritems():
 							if(items[1] == 'Contragarantias'):
 
@@ -111,12 +116,12 @@ try:
 									f.write("\nPara productos de contragarantias hay clientes con valor difetente a 'No son clientes del banco'")
 
 
-
 							if(items[1] != 'Contragarantias'):
 								text = df.loc[items[0]][4]
 								df.loc[items[0]][4] = re.search('[^0-9\\s]+', text)
 
 					if i == 5:
+						df[column] = df[column].astype(str)
 						monedas = ['0', '20', '6']
 						if (~df[column].isin(monedas).all()):
 							f.write("\nHay monedas que no corresponden a 0, 6 o 20")
@@ -140,11 +145,16 @@ try:
 
 				print("Fuentes procesada con exito")
 
-			except:
+			except Exception as e:
 				print(' Ha ocurrido un error, por favor verifique su fuente')
+				print(e)
+
 		except:
 			print(' Hay un error en los nombres de las columnas, valide que sean [Mes, Operación, Amortización del mes, Producto, Ente, Moneda], teniendo en cuenta el orden, las mayusculas y minusculas')
-	except:
+	
+	except Exception as e:
 		print(' Ha ocurrido un error, por favor verifique su fuente')
+		print(e)
+
 except:
 	print(" Hay un error en la fecha ingresada o en el nombre del archivo")

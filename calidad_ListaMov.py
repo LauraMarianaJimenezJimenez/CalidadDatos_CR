@@ -66,7 +66,6 @@ try:
 					f.write(": ")
 					text = str(df[column].isnull().sum())
 					f.write(text)
-					df[column] = df[column].astype(str)
 
 				#Remove carring return
 				df = df.replace({r'\\r': ' '}, regex=True)
@@ -89,12 +88,14 @@ try:
 
 					# AFECTACION
 					if i == 2:
+						df[column] = df[column].astype(str)
 						afectacion = ['Credito', 'Debito']
 						if (~df[column].isin(afectacion).all()):
 							f.write("\nHay tipos de tarjeta que no corresponden a Credito o Debito")
 
 					# Signo
 					if i == 3:
+						df[column] = df[column].astype(str)
 						for items in df['AFECTACION'].iteritems():
 							if(items[1] == 'Credito'):
 								valor = '-1'
@@ -133,12 +134,17 @@ try:
 
 				print("Fuentes procesada con exito")
 
-			except:
+			except Exception as e:
 				print(' Ha ocurrido un error, por favor verifique su fuente')
+				print(e)
+
 		except:
 			print(' Hay un error en los nombres de las columnas, valide que sean [COD, DESCRIP, AFECTACION, Signo, Desc_IncCom_CBO], teniendo en cuenta el orden, las mayusculas y minusculas')
-	except:
+
+	except Exception as e:
 		print(' Ha ocurrido un error, por favor verifique su fuente')
+		print(e)
+
 except:
 	print(" Hay un error en la fecha ingresada o en el nombre del archivo")
 

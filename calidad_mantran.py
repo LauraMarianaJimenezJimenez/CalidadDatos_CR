@@ -69,7 +69,6 @@ try:
 					f.write(": ")
 					text = str(df[column].isnull().sum())
 					f.write(text)
-					df[column] = df[column].astype(str)
 
 				# Changes for all columns
 
@@ -85,6 +84,7 @@ try:
 					# Fecha as date_origin or date_disb
 					# Formato DD/MM/AAAA
 					if i == 0:
+						df[column] = df[column].astype(str)
 						df[column] = np.where(df[column].str.contains('/'), pd.to_datetime(df[column], errors='coerce').dt.strftime('%d/%m/%Y'), pd.to_datetime(df[column], errors='coerce', dayfirst=True).dt.strftime('%d/%m/%Y'))
 						df[column] = df[column].astype(str)
 
@@ -94,13 +94,14 @@ try:
 					# Client Type as cod_subproduct
 					# Alfabético. Las opciones son "CMB", "PFS", "GBM".
 					if i == 6:
+						df[column] = df[column].astype(str)
 						subproductos = ['CMB', 'PFS', 'GBM']
 						if (~df[column].isin(subproductos).all()):
 							f.write("\nHay subproductos que no corresponden en la columna client type")
 
 					if (i > 2 and i < 6 or i > 6 and i < 15):
 						df[column] = df[column].astype(str)
-						df[column] = df[column].str.replace('[^0-9-,.\\s]+', '', regex=True)
+						df[column] = df[column].str.replace('[^Ee0-9-,.\\s]+', '', regex=True)
 						df[column] = df[column].str.replace(',', '.', regex=False)
 						df[column] = df[column].fillna('0')
 						df[column] = df[column].replace('nan', '0', regex=False)
@@ -139,11 +140,14 @@ try:
 
 				print("Fuente procesada con exito")
 
-			except:
+			except Exception as e:
 				print(' Ha ocurrido un error, por favor verifique su fuente')
+				print(e)
 		except:
 			print(' Hay un error en los nombres de las columnas, valide que sean [Trade Date, Time, CCY1, Notional1, Client Price, Close Price, Client Type, Reference Price, PL CM, PL GBM, Total PL, PL CM2, PL GBM2, Total PL2, PL COL CB, Blank, Client Type 2, Criterio, Subsegmento, Ente, CCY, Type], teniendo en cuenta el orden, las mayusculas y minusculas')
-	except:
+	
+	except Exception as e:
 		print(' Ha ocurrido un error, por favor verifique su fuente')
+		print(e)
 except:
 	print(" Hay un error en la fecha ingresada o en el nombre del archivo")

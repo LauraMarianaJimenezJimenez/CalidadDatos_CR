@@ -63,8 +63,7 @@ try:
 					f.write(text)
 					f.write(": ")
 					text = str(df[column].isnull().sum())
-					f.write(text)
-					df[column] = df[column].astype(str)
+					f.write(text)					
 
 				#Remove carring return
 				df = df.replace({r'\\r': ' '}, regex=True)
@@ -78,6 +77,7 @@ try:
 					# Fecha 
 					# Formato dd/mm/yyyy y se valida que todos los meses correspondan
 					if i == 0:
+						df[column] = df[column].astype(str)
 						df[column] = np.where(df[column].str.contains('/'), pd.to_datetime(df[column], errors='coerce').dt.strftime('%d/%m/%Y'), pd.to_datetime(df[column], errors='coerce', dayfirst=True).dt.strftime('%d/%m/%Y'))
 						df[column] = df[column].astype(str)
 						if (df[column].str.slice(3, 5) != data_date[4:6]).any():
@@ -86,6 +86,7 @@ try:
 					# Moneda
 					# Solo valor 0, valor 20 y valor 6
 					if i == 1:
+						df[column] = df[column].astype(str)
 						monedas = ['COLONES','DÓLARES']
 						if (~df[column].isin(monedas).any()):
 							f.write("\nHay monedas que no corresponden 'COLONES' o 'DÓLARES'")
@@ -102,6 +103,7 @@ try:
 
 					#  pig 
 					if i == 4:
+						df[column] = df[column].astype(str)
 						pig = ['N','S']
 						if (~df[column].isin(pig).all()):
 							f.write("\nHay pig que no corresponden a 'N' o 'S'")
@@ -109,8 +111,11 @@ try:
 
 					if i == 5:
 						df[column] = df[column].astype(str)
-						df[column] = df[column].str.replace('[^0-9,.\\s]+', '', regex=True)
+						df[column] = df[column].str.replace('[^Ee0-9-,.\\s]+', '', regex=True)
 						df[column] = df[column].str.replace(',', '.', regex=False)
+						df[column] = df[column].fillna('0')
+						df[column] = df[column].replace('nan', '0', regex=False)
+						df[column] = df[column].replace('', '0', regex=False)
 						df[column] = df[column].astype(float)
 
 					i = i + 1
@@ -135,11 +140,16 @@ try:
 
 				print("Fuentes procesada con exito")
 
-			except:
+			except Exception as e:
 				print(' Ha ocurrido un error, por favor verifique su fuente')
+				print(e)
+	
 		except:
 			print(' Hay un error en los nombres de las columnas, valide que sean [Mes, MONEDA, nrodeposito, tipocdi, pig, IntDiarioMO], teniendo en cuenta el orden, las mayusculas y minusculas')
-	except:
+	
+	except Exception as e:
 		print(' Ha ocurrido un error, por favor verifique su fuente')
+		print(e)
+
 except:
 	print(" Hay un error en la fecha ingresada o en el nombre del archivo")

@@ -62,7 +62,6 @@ try:
 					f.write(": ")
 					text = str(df[column].isnull().sum())
 					f.write(text)
-					df[column] = df[column].astype(str)
 
 				#Remove carring return
 				df = df.replace({r'\\r': ' '}, regex=True)
@@ -75,6 +74,7 @@ try:
 				for column in df:
 					# Fecha
 					if i == 0:
+						df[column] = df[column].astype(str)
 						df[column] = np.where(df[column].str.contains('/'), pd.to_datetime(df[column], errors='coerce').dt.strftime('%d/%m/%Y'), pd.to_datetime(df[column], errors='coerce', dayfirst=True).dt.strftime('%d/%m/%Y'))
 						df[column] = df[column].astype(str)
 						if (df[column].str.slice(3, 5) != data_date[4:6]).any():
@@ -97,23 +97,30 @@ try:
 					# Monto
 					if i == 2:
 						df[column] = df[column].astype(str)
-						df[column] = df[column].str.replace('[^0-9,.\\s]+', '', regex=True)
+						df[column] = df[column].str.replace('[^Ee0-9-,.\\s]+', '', regex=True)
 						df[column] = df[column].str.replace(',', '.', regex=False)
+						df[column] = df[column].fillna('0')
+						df[column] = df[column].replace('nan', '0', regex=False)
+						df[column] = df[column].replace('', '0', regex=False)
+						df[column] = df[column].astype(float)
 
 					#  Moneda
 					if i == 3:
+						df[column] = df[column].astype(str)
 						monedas = ['0']
 						if (~df[column].isin(monedas).any()):
 							f.write("\nHay monedas que no corresponden a 0")
 
 					# Tipo Tarejta
 					if i == 4:
+						df[column] = df[column].astype(str)
 						tipo_t = ['Credito', 'Debito']
 						if (~df[column].isin(tipo_t).any()):
 							f.write("\nHay tipos de tarjeta que no corresponden a Debito o Credito")
 
 				 	# Tipo Cuenta
 					if i == 5:
+						df[column] = df[column].astype(str)
 						tipo_C = ['Gasto MC', 'Ingreso MC',	'Gasto Visa', 'Ingreso Visa', 'Ingreso Visa/MC', 'Ingreso Express Digital']
 						if (~df[column].isin(tipo_C).any()):
 							f.write("\nHay tipos de tarjeta que no corresponden a Gasto MC, Ingreso MC, Gasto Visa, Ingreso Visa, Ingreso Visa/MC, Ingreso Express Digital")
@@ -141,12 +148,17 @@ try:
 
 				print("Fuentes procesada con exito")
 
-			except:
+			except Exception as e:
 				print(' Ha ocurrido un error, por favor verifique su fuente')
+				print(e)
+
 		except:
 			print(' Hay un error en los nombres de las columnas, valide que sean [Fecha, Tarjeta, Monto, Moneda, Tipo Tarjeta, Tipo Cuenta], teniendo en cuenta el orden, las mayusculas y minusculas')
-	except:
+
+	except Exception as e:
 		print(' Ha ocurrido un error, por favor verifique su fuente')
+		print(e)
+
 except:
 	print(" Hay un error en la fecha ingresada o en el nombre del archivo")
 

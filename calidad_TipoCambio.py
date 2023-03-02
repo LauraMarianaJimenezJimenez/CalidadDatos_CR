@@ -65,7 +65,7 @@ try:
 					f.write(": ")
 					text = str(df[column].isnull().sum())
 					f.write(text)
-					df[column] = df[column].astype(str)
+					
 
 				#Remove carring return
 				df = df.replace({r'\\r': ' '}, regex=True)
@@ -78,6 +78,7 @@ try:
 				for column in df:
 					#Pregunta porque solo TC_FOTO
 					if i == 0:
+						df[column] = df[column].astype(str)
 						contenido = ['TC_FOTO','TC_PROMEDIO', 'REG_FOTO', 'REG_PROMEDIO']
 						if (~df[column].isin(contenido).all()):
 							f.write("\nHay valores que no corresponden con el conetenido 'TC_FOTO','TC_PROMEDIO', 'REG_FOTO', 'REG_PROMEDIO'")
@@ -89,14 +90,18 @@ try:
 							f.write("\nHay fechas que no corresponden con el mes del archivo")
 
 					if i == 2:
+						df[column] = df[column].astype(str)
 						monedas = ['USD','EUR']
 						if (~df[column].isin(monedas).all()):
 							f.write("\nHay monedas que no corresponden 'USD' o 'EUR'")
 
 					if i == 3:
 						df[column] = df[column].astype(str)
-						df[column] = df[column].str.replace('[^0-9,.\\s]+', '', regex=True)
+						df[column] = df[column].str.replace('[^Ee0-9,.\\s]+', '', regex=True)
 						df[column] = df[column].str.replace(',', '.', regex=False)
+						df[column] = df[column].fillna('0')
+						df[column] = df[column].replace('nan', '0', regex=False)
+						df[column] = df[column].replace('', '0', regex=False)
 						df[column] = df[column].astype(float)
 
 					i = i + 1
@@ -121,12 +126,17 @@ try:
 
 				print("Fuentes procesada con exito")
 
-			except:
+			except Exception as e:
 				print(' Ha ocurrido un error, por favor verifique su fuente')
+				print(e)
+
 		except:
 			print(' Hay un error en los nombres de las columnas, valide que sean [Contenido, Fecha, Moneda, Tipo Cambio], teniendo en cuenta el orden, las mayusculas y minusculas')
-	except:
+
+	except Exception as e:
 		print(' Ha ocurrido un error, por favor verifique su fuente')
+		print(e)
+
 except:
 	print(" Hay un error en la fecha ingresada o en el nombre del archivo")
 

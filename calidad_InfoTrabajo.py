@@ -70,7 +70,6 @@ try:
 					f.write(": ")
 					text = str(df[column].isnull().sum())
 					f.write(text)
-					df[column] = df[column].astype(str)
 
 				#Remove carring return
 				df = df.replace({r'\\r': ' '}, regex=True)
@@ -101,6 +100,7 @@ try:
 
 					# Nombre BIN
 					if i == 2:
+						df[column] = df[column].astype(str)
 						BIN = ['Visa', 'MC']
 						if (~df[column].isin(BIN).all()):
 							f.write("\nHay nombres de BIN que no corresponden a Visa o MC")
@@ -114,6 +114,7 @@ try:
 							f.write("\nHay BINES no activos")
 
 					if i == 4:
+						df[column] = df[column].astype(str)
 						tipo = ['Credito', 'Debito']
 						if (~df[column].isin(tipo).all()):
 							f.write("\nHay tipos de tarjeta que no corresponden a Debito o Credito")
@@ -126,6 +127,7 @@ try:
 						df[column] = df[column].str.replace('[^0-9-\\s]+', '', regex=True)
 
 					if i == 7:
+						df[column] = df[column].astype(str)
 						tipo = ['Platino', 'Dorado', 'Clásico', 'Business', 'Premier', 'Infinity']
 						if (~df[column].isin(tipo).all()):
 							f.write("\nHay tipos de tarjeta que no corresponden a 'Platino', 'Dorado', 'Clásico', 'Business', 'Premier', 'Infinity'")
@@ -156,12 +158,18 @@ try:
 
 				print("Fuentes procesada con exito")
 
-			except:
+			except Exception as e:
 				print(' Ha ocurrido un error, por favor verifique su fuente')
+				print(e)
+
 		except:
 			print(' Hay un error en los nombres de las columnas, valide que sean [ID, BIN, NOMBRE_BIN, PRODUCTO, TIPO, activo, IdProducto, PRODUCTO2], teniendo en cuenta el orden, las mayusculas y minusculas')
-	except:
+	
+
+	except Exception as e:
 		print(' Ha ocurrido un error, por favor verifique su fuente')
+		print(e)
+		
 except:
 	print(" Hay un error en la fecha ingresada o en el nombre del archivo")
 

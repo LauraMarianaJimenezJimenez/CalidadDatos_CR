@@ -67,7 +67,6 @@ try:
 					f.write(": ")
 					text = str(df[column].isnull().sum())
 					f.write(text)
-					df[column] = df[column].astype(str)
 
 				#Remove carring return
 				df = df.replace({r'\\r': ' '}, regex=True)
@@ -82,6 +81,7 @@ try:
 					# Fecha 
 					# Formato dd/mm/yyyy y se valida que todos los meses correspondan a 
 					if i == 0:
+						df[column] = df[column].astype(str)
 						df[column] = np.where(df[column].str.contains('/'), pd.to_datetime(df[column], errors='coerce').dt.strftime('%d/%m/%Y'), pd.to_datetime(df[column], errors='coerce', dayfirst=True).dt.strftime('%d/%m/%Y'))
 						df[column] = df[column].astype(str)
 						if (df[column].str.slice(3, 5)  != data_date[4:6]).any():
@@ -97,13 +97,17 @@ try:
 					# Solo datos numéricos, decimal separado por punto
 					if i == 2:
 						df[column] = df[column].astype(str)
-						df[column] = df[column].str.replace('[^0-9,.\\s]+', '', regex=True)
+						df[column] = df[column].str.replace('[^Ee0-9-,.\\s]+', '', regex=True)
 						df[column] = df[column].str.replace(',', '.', regex=False)
+						df[column] = df[column].fillna('0')
+						df[column] = df[column].replace('nan', '0', regex=False)
+						df[column] = df[column].replace('', '0', regex=False)
 						df[column] = df[column].astype(float)
 
 					# Dolarizado
 					# 
 					if i == 3:
+						df[column] = df[column].astype(str)
 						for items in df['Moneda'].iteritems():
 							if(items[1] == '20'):
 								dolar = df.loc[items[0]][2] / rate
@@ -117,11 +121,14 @@ try:
 								df.loc[items[0]][3] = 0
 
 						df[column] = df[column].str.replace('[^0-9,.\\s]+', '', regex=True)
+						df[column] = df[column].str.replace('.', ',', regex=False)
+
 
 
 					# Moneda
 					# Solo valor 0 y valor 20
 					if i == 4:
+						df[column] = df[column].astype(str)
 						monedas = ['0', '20']
 						if (~df[column].isin(monedas).all()):
 							f.write("\nHay monedas que no corresponden a 0 o 20")
@@ -144,7 +151,6 @@ try:
 						if (df[column] == 'ND').any():
 							f.write("\nHay valores ND en columna Producto Vista # cuenta")
 
-
 						for items in df['Producto Vista # cuenta'].iteritems():
 							if(items[1] == 'ND'):
 								valor = 'ND'
@@ -158,7 +164,7 @@ try:
 					if i == 8:
 						df[column] = df[column].astype(str)
 						if (df[column] == 'ND').any():
-							f.write("\nHay valores ND en columna Producto Vista # cuenta")
+							f.write("\nHay valores ND en columna Nombre Producto")
 							df[column] = df[column].str.replace('ND', '', regex=False)
 						df[column] = df[column].str.replace('[^a-zA-Z-\\s]+', '', regex=True)
 
@@ -186,11 +192,15 @@ try:
 
 				print("Fuentes procesada con exito")
 				
-			except:
+			except Exception as e:
 				print(' Ha ocurrido un error, por favor verifique su fuente')
+				print(e)
+
 		except:
 			print(' Hay un error en los nombres de las columnas, valide que sean [en_ente, en_linea_neg_cv, en_subsegmento, ah_cta_banco, hm_moneda, hm_fecha, hm_valor, hm_referencia, hm_signo], teniendo en cuenta el orden, las mayusculas y minusculas')
-	except:
+	
+	except Exception as e:
 		print(' Ha ocurrido un error, por favor verifique su fuente')
+		print(e)
 except:
 	print(" Hay un error en la fecha ingresada o en el nombre del archivo")

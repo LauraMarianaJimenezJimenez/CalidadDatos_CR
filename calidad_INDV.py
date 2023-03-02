@@ -64,7 +64,6 @@ try:
 					f.write(": ")
 					text = str(df[column].isnull().sum())
 					f.write(text)
-					df[column] = df[column].astype(str)
 
 				#Remove carring return
 				df = df.replace({r'\\r': ' '}, regex=True)
@@ -134,7 +133,7 @@ try:
 					# ta_saldo_principal
 					if i == 5:
 						df[column] = df[column].astype(str)
-						df[column] = df[column].str.replace('[^0-9-,.\\s]+', '', regex=True)
+						df[column] = df[column].str.replace('[^Ee0-9-,.\\s]+', '', regex=True)
 						df[column] = df[column].str.replace(',', '.', regex=False)
 						df[column] = df[column].fillna('0')
 						df[column] = df[column].replace('nan', '0', regex=False)
@@ -151,12 +150,12 @@ try:
 					# ta_tasa_int_vig
 					if i == 7:
 						df[column] = df[column].astype(str)
-						df[column] = df[column].str.replace('[^0-9,.\\s]+', '', regex=True)
+						df[column] = df[column].str.replace('[^Ee0-9,.\\s]+', '', regex=True)
 						df[column] = df[column].str.replace(',', '.', regex=False)
 						df[column] = df[column].fillna('0')
 						df[column] = df[column].replace('nan', '0', regex=False)
 						df[column] = df[column].replace('', '0', regex=False)
-						df[column] = df[column].str.replace(' ', '', regex=False)
+						df[column] = df[column].str.replace(" ","", regex=False)
 						df[column] = df[column].str.strip()
 						df[column] = df[column].astype(float)
 
@@ -167,6 +166,7 @@ try:
 
 					# ta_fecha_corte
 					if i == 8:
+						df[column] = df[column].astype(str)
 						df[column] = np.where(df[column].str.contains('/'), pd.to_datetime(df[column], errors='coerce').dt.strftime('%d/%m/%Y'), pd.to_datetime(df[column], errors='coerce', dayfirst=True).dt.strftime('%d/%m/%Y'))
 						df[column] = df[column].astype(str)
 						if (df[column].str.slice(3, 5) != data_date[4:6]).any():
@@ -174,6 +174,7 @@ try:
 
 					# ta_id_deudor
 					if i == 9:
+						df[column] = df[column].astype(str)
 						df[column] = df[column].str.strip()
 						df[column] = df[column].str.replace('[^0-9\\s]+', '', regex=True)
 						for items in df['ta_id_deudor'].iteritems():
@@ -186,6 +187,7 @@ try:
 
 					# ta_tpersona_deudor
 					if i == 10:
+						df[column] = df[column].astype(str)
 						df[column] = df[column].str.strip()
 						df[column] = df[column].astype(str)
 						deudor = ['F', 'J']
@@ -194,6 +196,7 @@ try:
 
 					# Rango Mora
 					if i == 11:
+						df[column] = df[column].astype(str)
 						df[column] = df[column].str.strip()
 						df[column] = df[column].astype(str)
 						mora = ['Al día', 'De 1 a 30', 'De 31 a 60', 'De 61 a 90']
@@ -203,7 +206,7 @@ try:
 					# Ajuste de intereses
 					if i == 12:
 						df[column] = df[column].astype(str)
-						df[column] = df[column].str.replace('[^0-9-,.\\s]+', '', regex=True)
+						df[column] = df[column].str.replace('[^Ee0-9-,.\\s]+', '', regex=True)
 						df[column] = df[column].str.replace(',', '.', regex=False)
 						df[column] = df[column].fillna('0')
 						df[column] = df[column].replace('nan', '0', regex=False)
@@ -212,18 +215,21 @@ try:
 
 					# Tipo de tarjeta
 					if i == 13:
+						df[column] = df[column].astype(str)
 						tarjeta = ['VISA', 'MASTER']
 						if (~df[column].isin(tarjeta).all()):
 							f.write("\nHay tipos de tarjeta que no corresponden a VISA o MASTER")
 
 					# Descripción Mora
 					if i == 14:
+						df[column] = df[column].astype(str)
 						estado_mora = ['VIGENTE', 'VENCIDO']
 						if (~df[column].isin(estado_mora).all()):
 							f.write("\nHay estados de mora que no corresponden a VIGENTE o VENCIDO")
 
 					# En_Subsegmento
 					if i == 15: 
+						df[column] = df[column].astype(str)
 						df[column] = df[column].str.strip()
 						df[column] = df[column].astype(str)
 						df[column] = df[column].str.replace('[^a-zA-Z-\\s]+', '', regex=True)
@@ -252,12 +258,17 @@ try:
 
 				print("Fuentes procesada con exito")
 
-			except:
+			except Exception as e:
 				print(' Ha ocurrido un error, por favor verifique su fuente')
+				print(e)
+	
 		except:
 			print(' Hay un error en los nombres de las columnas, valide que sean [ta_num_tarjeta_titular, cuentatc, ta_id_linea, ta_id_operacion, ta_tmoneda, ta_saldo_principal, ta_indica_intra_extra, ta_tasa_int_vig, ta_fecha_corte, ta_id_deudor, ta_tpersona_deudor, Rango Mora, Ajuste de intereses, Tipo Tarjeta, Descripción Mora, En_Subsegmento], teniendo en cuenta el orden, las mayusculas y minusculas')
-	except:
+	
+	except Exception as e:
 		print(' Ha ocurrido un error, por favor verifique su fuente')
+		print(e)
+
 except:
 	print(" Hay un error en la fecha ingresada o en el nombre del archivo")
 

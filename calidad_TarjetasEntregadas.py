@@ -18,7 +18,6 @@ try:
 	data_date = input()
 	print('Procesando...')
 
-	# file = os.path.abspath("../Fuentes_iniciales/ManualTransactions_"+ data_date "_.xls")
 	file = os.path.abspath("../Fuentes_iniciales/TarjetasEntregadas_" + data_date + ".xlsx")
 
 	# Raed file
@@ -45,7 +44,6 @@ try:
 				
 			# Remove duplicate records
 			df = df.drop_duplicates()
-
 			try:
 				path = os.path.abspath('../Informes/Informe_TarjetasEntregadas_' + data_date + '.txt')
 
@@ -66,7 +64,6 @@ try:
 					f.write(": ")
 					text = str(df[column].isnull().sum())
 					f.write(text)
-					df[column] = df[column].astype(str)
 
 				#Remove carring return
 				df = df.replace({r'\\r': ' '}, regex=True)
@@ -87,7 +84,7 @@ try:
 								f.write("\nhay cuentas de tarjetas con longitud mayor de 13")
 								
 							elif (len(items[1]) < 13):
-								f.write("\nhay tarjetas con longitud menor de 13")
+								f.write("\nhay cuentas de tarjetas con longitud menor de 13")
 								break
 					# TC
 					if i == 1:
@@ -96,11 +93,11 @@ try:
 					
 						for items in df['Cuenta TC'].iteritems():
 							if(len(items[1]) > 16):
-								f.write("\nhay cuentas de tarjetas con longitud mayor de 16")
+								f.write("\nhay números de tarjetas con longitud mayor de 16")
 								break
 
 							elif (len(items[1]) < 16):
-								f.write("\nhay tarjetas con longitud menor de 16")
+								f.write("\nhay números de tarjeta con longitud menor de 16")
 								break
 
 					# Nombre
@@ -131,8 +128,11 @@ try:
 					# Limite
 					if i == 7:
 						df[column] = df[column].astype(str)
-						df[column] = df[column].str.replace('[^0-9,.\\s]+', '', regex=True)
+						df[column] = df[column].str.replace('[^Ee0-9-,.\\s]+', '', regex=True)
 						df[column] = df[column].str.replace(',', '.', regex=False)
+						df[column] = df[column].fillna('0')
+						df[column] = df[column].replace('nan', '0', regex=False)
+						df[column] = df[column].replace('', '0', regex=False)
 						df[column] = df[column].astype(float)
 
 					# Cod Ejec
@@ -190,6 +190,7 @@ try:
 
 					# Color
 					if i == 16:
+						df[column] = df[column].astype(str)
 						color = ['Black', 'Platino', 'Clásica', 'Bussines', 'Dorada', 'Infinite']
 						if (~df[column].isin(color).all()):
 							f.write("\nHay colores que no corresponden a 'Black', 'Platino', 'Clásica', 'Bussines', 'Dorada', 'Infinite'")
@@ -224,12 +225,17 @@ try:
 
 				print("Fuentes procesada con exito")
 
-			except:
+			except Exception as e:
 				print(' Ha ocurrido un error, por favor verifique su fuente')
+				print(e)
+
 		except:
 			print(' Hay un error en los nombres de las columnas, valide que sean [Fecha, Tarjeta, Monto, Moneda, Tipo Tarjeta, Tipo Cuenta], teniendo en cuenta el orden, las mayusculas y minusculas')
-	except:
+	
+	except Exception as e:
 		print(' Ha ocurrido un error, por favor verifique su fuente')
+		print(e)
+
 except:
 	print(" Hay un error en la fecha ingresada o en el nombre del archivo")
 

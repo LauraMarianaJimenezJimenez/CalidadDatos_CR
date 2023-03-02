@@ -71,9 +71,7 @@ try:
 					f.write(": ")
 					text = str(df[column].isnull().sum())
 					f.write(text)
-					df[column] = df[column].astype(str)
-
-
+					
 				# Se realizan las reglas de calidad generales en la estructura del archivo, esto incluye eliminar filas vacias, saltos de linea, carring return y caracteres 
 				# especiales que puedan afectar la converisión a csv
 
@@ -94,6 +92,7 @@ try:
 					# Fecha as date_origin or date_disb
 					# Formato MM/DD/AAAA
 					if i == 1:
+						df[column] = df[column].astype(str)
 						df[column] = np.where(df[column].str.contains('/'), pd.to_datetime(df[column], errors='coerce').dt.strftime('%d/%m/%Y'), pd.to_datetime(df[column], errors='coerce', dayfirst=True).dt.strftime('%d/%m/%Y'))
 						df[column] = df[column].astype(str)
 
@@ -119,17 +118,22 @@ try:
 						df[column] = df[column].str.replace('[^0-9\\s]+', '', regex=True)
 
 					if (i in numbers or i > 24 and i < 36 or i > 44 and i < 46 or i > 47 and i < 49):
-						df[column] = df[column].fillna(0)
 						df[column] = df[column].astype(str)
-						df[column] = df[column].str.replace('[^0-9-,.\\s]+', '', regex=True)
-						df[column] = df[column].str.replace('.', ',', regex=False)
+						df[column] = df[column].str.replace('[^Ee0-9-,.\\s]+', '', regex=True)
+						df[column] = df[column].str.replace(',', '.', regex=False)
+						df[column] = df[column].fillna('0')
+						df[column] = df[column].replace('nan', '0', regex=False)
+						df[column] = df[column].replace('', '0', regex=False)
+						df[column] = df[column].astype(float)
 
 					if i == 21:
+						df[column] = df[column].astype(str)
 						df[column] = np.where(df[column].str.contains('/'), pd.to_datetime(df[column], errors='coerce').dt.strftime('%d/%m/%Y'), pd.to_datetime(df[column], errors='coerce', dayfirst=True).dt.strftime('%d/%m/%Y'))
 
 					# Client Type as cod_subproduct
 					# Alfabético. Las opciones son "CMB", "PFS", "GBM".
 					if i == 35:
+						df[column] = df[column].astype(str)
 						subproductos = ['CMB', 'PFS', 'GBM']
 						if (~df[column].isin(subproductos).any()):
 							f.write("\nHay subproductos que no corresponden en la columna client type")
@@ -137,7 +141,7 @@ try:
 					# CM  y GM
 					if i == 40 or i == 41:
 						df[column] = df[column].astype(str)
-						df[column] = df[column].str.replace('[^0-9-,.\\s]+', '', regex=True)
+						df[column] = df[column].str.replace('[^Ee0-9-,.\\s]+', '', regex=True)
 						df[column] = df[column].str.replace(',', '.', regex=False)
 						df[column] = df[column].fillna('0')
 						df[column] = df[column].replace('nan', '0', regex=False)
@@ -146,7 +150,7 @@ try:
 
 					if i == 44:	
 						df[column] = df[column].astype(str)
-						df[column] = df[column].str.replace('[^0-9%.,\\s]+', '', regex=True)
+						df[column] = df[column].str.replace('[^Ee0-9%.,\\s]+', '', regex=True)
 						df[column] = df[column].str.strip()
 						df[column] = df[column] + '%'
 
@@ -178,12 +182,17 @@ try:
 
 				print("Fuentes procesada con exito")
 
-			except:
+			except Exception as e:
 				print(' Ha ocurrido un error, por favor verifique su fuente')
+				print(e)
+	
 		except:
 			print(' Hay un error en los nombres de las columnas, valide que sean [Empresa, Fecha, Suc. Origen, Prod.Origen, Secuencial, Cliente, Nombre, Clase, Valor Origen, Mon.Origen, Cambio, Valor Destino, Mon.Destino, Compromiso, Tipo, Usuario, xCaja, Autorización, Estado, Hora, Valor, CorteBCCR, TCxMonto, DiaSemana, verificaMonex, Monto1, Precio, Monto2, Precio2, Producto1, Monto3, Precio3, Producto2, PL compras, PL Ventas, New PL, Client Type, Client Type2, Line of Busines?, Board Rate, CM, GM, Gananc/USD, SubSegmento, % Ponderado, Pro.Pond., Cls+Est+SubLoB, Board Rate 2, CM2, GM2, Client Type3, Client Type4, LoB?2, CM3, GM3], teniendo en cuenta el orden, las mayusculas y minusculas')
-	except:
+	
+	except Exception as e:
 		print(' Ha ocurrido un error, por favor verifique su fuente')
+		print(e)
+
 except:
 	print(" Hay un error en la fecha ingresada o en el nombre del archivo")
 

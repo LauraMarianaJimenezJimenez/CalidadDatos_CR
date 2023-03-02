@@ -64,7 +64,6 @@ try:
 					f.write(": ")
 					text = str(df[column].isnull().sum())
 					f.write(text)
-					df[column] = df[column].astype(str)
 
 				#Remove carring return
 				df = df.replace({r'\\r': ' '}, regex=True)
@@ -77,6 +76,7 @@ try:
 				for column in df:
 					# Fecha
 					if i == 0:
+						df[column] = df[column].astype(str)
 						df[column] = np.where(df[column].str.contains('/'), pd.to_datetime(df[column], errors='coerce').dt.strftime('%d/%m/%Y'), pd.to_datetime(df[column], errors='coerce', dayfirst=True).dt.strftime('%d/%m/%Y'))
 						df[column] = df[column].astype(str)
 						if (df[column].str.slice(3, 5) != data_date[4:6]).any():
@@ -95,7 +95,7 @@ try:
 					# Cuenta colones	
 					if i == 3:	
 						df[column] = df[column].astype(str)
-						print(df[column])
+						df[column] = df[column].str.replace('[^0-9\\s]+', '', regex=True)
 						df[column] = df[column].replace('', 'N/A', regex=False)
 						df[column] = df[column].replace('nan', 'N/A', regex=False)
 
@@ -105,12 +105,18 @@ try:
 					# Interes Bruto Colones
 					if i == 4:
 						df[column] = df[column].astype(str)
-						df[column] = df[column].str.replace('[^0-9,.\\s]+', '', regex=True)
-						df[column] = df[column].str.replace('.', ',', regex=False)
+						print(df[column])
+						df[column] = df[column].str.replace('[^Ee0-9,.\\s]+', '', regex=True)
+						df[column] = df[column].str.replace(',', '.', regex=False)
+						df[column] = df[column].fillna('0')
+						df[column] = df[column].replace('nan', '0', regex=False)
+						df[column] = df[column].replace('', '0', regex=False)
+						df[column] = df[column].astype(float)
 						
 					# Cuenta Dolares
 					if i == 5:
 						df[column] = df[column].astype(str)
+						df[column] = df[column].str.replace('[^0-9\\s]+', '', regex=True)
 						print('N/A ' + column)
 						df[column] = df[column].replace('', 'N/A', regex=False)
 						df[column] = df[column].replace('nan', 'N/A', regex=False)
@@ -121,8 +127,12 @@ try:
 					# Interes Bruto Dolares
 					if i == 6:
 						df[column] = df[column].astype(str)
-						df[column] = df[column].str.replace('[^0-9,.\\s]+', '', regex=True)
-						df[column] = df[column].str.replace('.', ',', regex=False)
+						df[column] = df[column].str.replace('[^Ee0-9,.\\s]+', '', regex=True)
+						df[column] = df[column].str.replace(',', '.', regex=False)
+						df[column] = df[column].fillna('0')
+						df[column] = df[column].replace('nan', '0', regex=False)
+						df[column] = df[column].replace('', '0', regex=False)
+						df[column] = df[column].astype(float)
 
 					i = i + 1
 
@@ -147,12 +157,17 @@ try:
 
 				print("Fuentes procesada con exito")
 
-			except:
+			except Exception as e:
 				print(' Ha ocurrido un error, por favor verifique su fuente')
+				print(e)
+	
 		except:
 			print(' Hay un error en los nombres de las columnas, valide que sean [Fecha, ENTE, Nombre de Cuenta, Cuenta Colones, Intereses Bruto Colones, Cuenta Dolares, Intereses Bruto Dolares], teniendo en cuenta el orden, las mayusculas y minusculas')
-	except:
+	
+	except Exception as e:
 		print(' Ha ocurrido un error, por favor verifique su fuente')
+		print(e)
+
 except:
 	print(" Hay un error en la fecha ingresada o en el nombre del archivo")
 

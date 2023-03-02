@@ -143,12 +143,16 @@ def captacion_col():
 
 					print("Fuente Curva_Captacion_Col_" + data_date + ".xls procesada con exito")
 
-				except:
+				except Exception as e:
 					print(' Ha ocurrido un error, por favor verifique su fuente Curva_Captacion_Col')
+					print(e)
+
 			except:
 				print(' Hay un error en los nombres de las columnas, valide que sean [Días, Curva Captación], teniendo en cuenta el orden, las mayusculas y minusculas para la fuente Curva_Captacion_Col')
-		except:
-			 print(" Ha ocurrido un error, revise el formato de su fuente Curva_Captacion_Col")			
+
+		except Exception as e:
+			print(' Ha ocurrido un error, por favor verifique su fuente Curva_Captacion_Col')
+			print(e)
 	except:
 		print(" Hay un error en la fecha ingresada o en el nombre del archivo Curva_Captacion_Col")
 
@@ -283,12 +287,17 @@ def captacion_dol():
 					writer.save()
 					print("Fuente Curva_Captacion_Dol_" + data_date +".xls procesada con exito")
 
-				except:
+				except Exception as e:
 					print(' Ha ocurrido un error, por favor verifique su fuente Curva_Captacion_Dol')
+					print(e)
+
 			except:
 				print(' Hay un error en los nombres de las columnas, valide que sean [Días, Curva Captación], teniendo en cuenta el orden, las mayusculas y minusculas para la fuente Curva_Captacion_Col')
-		except:
-			 print(" Ha ocurrido un error, revise el formato de su fuente Curva_Captacion_Dol")			
+		
+		except Exception as e:
+			print(' Ha ocurrido un error, por favor verifique su fuente Curva_Captacion_Dol')
+			print(e)		
+	
 	except:
 		print(" Hay un error en la fecha ingresada o en el nombre del archivo Curva_Captacion_Dol")
 
@@ -471,12 +480,17 @@ def colocacion_col():
 					writer.save()
 					print("Fuente Curva_Colocacion_Col_" + data_date + ".xls procesada con exito")
 
-				except:
+				except Exception as e:
 					print(' Ha ocurrido un error, por favor verifique su fuente Curva_Colocacion_Col_')
+					print(e)
+
 			except:
 				print(' Hay un error en los nombres de las columnas, valide que sean [Días, Curva Colocación, Prima Liquidez, Rend + Prima Liquidez], teniendo en cuenta el orden, las mayusculas y minusculas de su fuente Curva_Colocacion_Col_')
-		except:
+		
+		except Exception as e:
 			print(' Ha ocurrido un error, por favor verifique su fuente Curva_Colocacion_Col_')
+			print(e)
+
 	except:
 		print(" Hay un error en la fecha ingresada o en el nombre del archivo Curva_Colocacion_Col_")
 
@@ -660,12 +674,17 @@ def colocacion_dol():
 					writer.save()
 					print("Fuente Curva_Colocacion_Dol_" + data_date + ".xls procesada con exito")
 
-				except:
+				except Exception as e:
 					print(' Ha ocurrido un error, por favor verifique su fuente Curva_Colocacion_Dol')
+					print(e)
+
 			except:
 				print(' Hay un error en los nombres de las columnas, valide que sean [Días, Curva Colocación, Prima Liquidez, Rend + Prima Liquidez], teniendo en cuenta el orden, las mayusculas y minusculas de su fuente Curva_Colocacion_Dol')
-		except:
+		
+		except Exception as e:
 			print(' Ha ocurrido un error, por favor verifique su fuente Curva_Colocacion_Dol')
+			print(e)
+	
 	except:
 		print(" Hay un error en la fecha ingresada o en el nombre del archivo Curva_Colocacion_Dol")
 
@@ -800,12 +819,17 @@ def PIPCA_col():
 					writer.save()
 					print("Fuente Curva_PIPCA_Col_" + data_date + ".xls procesada con exito")
 
-				except:
-					print(' Ha ocurrido un error, por favor verifique su fuente Curva_PIPCA_Col')
+				except Exception as e:
+					print(' Ha ocurrido un error, por favor verifique su fuente urva_PIPCA_Col')
+					print(e)
+
 			except:
 				print(' Hay un error en los nombres de las columnas, valide que sean [Plazo, Yield Lineal en Colones], teniendo en cuenta el orden, las mayusculas y minusculas de su fuente Crva_PIPCA_Col')
-		except:
+		
+		except Exception as e:
 			print(' Ha ocurrido un error, por favor verifique su fuente Curva_PIPCA_Col')
+			print(e)
+	
 	except:
 		print(" Hay un error en la fecha ingresada o en el nombre del archivo Curva_PIPCA_Col")
 
@@ -937,12 +961,17 @@ def PIPCA_dol():
 					writer.save()
 					print("Fuente Curva_PIPCA_Dol_" + data_date + ".xls procesada con exito")
 
-				except:
+				except Exception as e:
 					print(' Ha ocurrido un error, por favor verifique su fuente Curva_PIPCA_Dol')
+					print(e)
+
 			except:
 				print(' Hay un error en los nombres de las columnas, valide que sean [Plazo, Yield Lineal en Colones], teniendo en cuenta el orden, las mayusculas y minusculas de su fuente Crva_PIPCA_Dol')
-		except:
+		
+		except Exception as e:
 			print(' Ha ocurrido un error, por favor verifique su fuente Curva_PIPCA_Dol')
+			print(e)
+	
 	except:
 		print(" Hay un error en la fecha ingresada o en el nombre del archivo Curva_PIPCA_Dol")
 
