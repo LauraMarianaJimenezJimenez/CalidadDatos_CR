@@ -132,10 +132,10 @@ try:
 
 					# Client Type as cod_subproduct
 					# Alfabético. Las opciones son "CMB", "PFS", "GBM".
-					if i == 35:
+					if i == 36:
 						df[column] = df[column].astype(str)
 						subproductos = ['CMB', 'PFS', 'GBM']
-						if (~df[column].isin(subproductos).any()):
+						if (~df[column].isin(subproductos).all()):
 							f.write("\nHay subproductos que no corresponden en la columna client type")
 					
 					# CM  y GM
@@ -167,7 +167,7 @@ try:
 				df.rename(columns={"Client Type3": "Client Type"}, inplace=True)
 				df.rename(columns={"Client Type4": "Client Type2"}, inplace=True)
 
-				# Generación del flag de validación, marcación de tiempo unix
+
 				date_time = datetime.datetime.now()      
 				unix_time = time.mktime(date_time.timetuple())
 				unix_time = str(unix_time)

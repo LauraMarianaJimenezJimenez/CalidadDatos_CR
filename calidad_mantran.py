@@ -35,7 +35,7 @@ try:
 		df.columns = df.columns.astype(str)
 
 		# Remove entirely empty column
-		df = df.dropna(how="all", axis=1)
+		# df = df.dropna(how="all", axis=1)
 		# Remove entirely empty row
 		df = df.dropna(how="all")
 
@@ -143,9 +143,10 @@ try:
 			except Exception as e:
 				print(' Ha ocurrido un error, por favor verifique su fuente')
 				print(e)
-		except:
+		except Exception as e:
 			print(' Hay un error en los nombres de las columnas, valide que sean [Trade Date, Time, CCY1, Notional1, Client Price, Close Price, Client Type, Reference Price, PL CM, PL GBM, Total PL, PL CM2, PL GBM2, Total PL2, PL COL CB, Blank, Client Type 2, Criterio, Subsegmento, Ente, CCY, Type], teniendo en cuenta el orden, las mayusculas y minusculas')
-	
+			print(e)
+
 	except Exception as e:
 		print(' Ha ocurrido un error, por favor verifique su fuente')
 		print(e)

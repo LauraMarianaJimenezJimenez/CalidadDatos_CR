@@ -107,23 +107,18 @@ try:
 					# Dolarizado
 					# 
 					if i == 3:
-						df[column] = df[column].astype(str)
 						for items in df['Moneda'].iteritems():
-							if(items[1] == '20'):
+							if(items[1] == 20):
 								dolar = df.loc[items[0]][2] / rate
-								df.loc[items[0]][3] = dolar
+								#df.loc[items[0]][3] = dolar
+								df.at[items[0], 'Dolarizado'] = dolar
 							
-							if(items[1] == '0'):
+							if(items[1] == 0):
 								dolar = df.loc[items[0]][2]
-								df.loc[items[0]][3] = dolar
+								df.at[items[0], 'Dolarizado'] = dolar
 
-							if(items[1] != '0' or items[1] != '20'):
-								df.loc[items[0]][3] = 0
-
-						df[column] = df[column].str.replace('[^0-9,.\\s]+', '', regex=True)
-						df[column] = df[column].str.replace('.', ',', regex=False)
-
-
+							if(items[1] != 0 and items[1] != 20):
+								df.at[items[0], 'Dolarizado'] = 0
 
 					# Moneda
 					# Solo valor 0 y valor 20

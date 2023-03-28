@@ -88,7 +88,7 @@ try:
 					if i == 1:
 						df[column] = df[column].astype(str)
 						monedas = ['COLONES','DÓLARES']
-						if (~df[column].isin(monedas).any()):
+						if (~df[column].isin(monedas).all()):
 							f.write("\nHay monedas que no corresponden 'COLONES' o 'DÓLARES'")
 
 					# nrodeposito

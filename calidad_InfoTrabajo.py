@@ -113,19 +113,23 @@ try:
 						if (df[column] == 'ND').any():
 							f.write("\nHay BINES no activos")
 
+					#Tipo
 					if i == 4:
 						df[column] = df[column].astype(str)
 						tipo = ['Credito', 'Debito']
 						if (~df[column].isin(tipo).all()):
 							f.write("\nHay tipos de tarjeta que no corresponden a Debito o Credito")
 
+					#activo
 					if i == 5:
 						df[column] = '1'
 
+					#IdProducto
 					if i == 6:
 						df[column] = df[column].astype(str)
 						df[column] = df[column].str.replace('[^0-9-\\s]+', '', regex=True)
 
+					#PRODUCTO2
 					if i == 7:
 						df[column] = df[column].astype(str)
 						tipo = ['Platino', 'Dorado', 'Clásico', 'Business', 'Premier', 'Infinity']

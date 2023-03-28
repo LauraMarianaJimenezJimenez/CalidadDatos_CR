@@ -108,21 +108,21 @@ try:
 					if i == 3:
 						df[column] = df[column].astype(str)
 						monedas = ['0']
-						if (~df[column].isin(monedas).any()):
+						if (~df[column].isin(monedas).all()):
 							f.write("\nHay monedas que no corresponden a 0")
 
 					# Tipo Tarejta
 					if i == 4:
 						df[column] = df[column].astype(str)
 						tipo_t = ['Credito', 'Debito']
-						if (~df[column].isin(tipo_t).any()):
+						if (~df[column].isin(tipo_t).all()):
 							f.write("\nHay tipos de tarjeta que no corresponden a Debito o Credito")
 
 				 	# Tipo Cuenta
 					if i == 5:
 						df[column] = df[column].astype(str)
 						tipo_C = ['Gasto MC', 'Ingreso MC',	'Gasto Visa', 'Ingreso Visa', 'Ingreso Visa/MC', 'Ingreso Express Digital']
-						if (~df[column].isin(tipo_C).any()):
+						if (~df[column].isin(tipo_C).all()):
 							f.write("\nHay tipos de tarjeta que no corresponden a Gasto MC, Ingreso MC, Gasto Visa, Ingreso Visa, Ingreso Visa/MC, Ingreso Express Digital")
 
 					i = i + 1

@@ -45,7 +45,7 @@ try:
 			df = df[['Tarjeta', 'Cuenta TCR', 'Cliente', 'Ente', 'Monto', 'Moneda', 'Dolariza', 'Fecha', 'Vendedor', 'Usuario', 'Puesto', 'Canal de Venta', 'Tipo de Plan', 'PLAN2', 'VENDEDOR']]
 				
 			# Remove duplicate records
-			df = df.drop_duplicates()
+			#df = df.drop_duplicates()
 
 			try:
 

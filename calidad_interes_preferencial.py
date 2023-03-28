@@ -105,7 +105,6 @@ try:
 					# Interes Bruto Colones
 					if i == 4:
 						df[column] = df[column].astype(str)
-						print(df[column])
 						df[column] = df[column].str.replace('[^Ee0-9,.\\s]+', '', regex=True)
 						df[column] = df[column].str.replace(',', '.', regex=False)
 						df[column] = df[column].fillna('0')
@@ -117,7 +116,6 @@ try:
 					if i == 5:
 						df[column] = df[column].astype(str)
 						df[column] = df[column].str.replace('[^0-9\\s]+', '', regex=True)
-						print('N/A ' + column)
 						df[column] = df[column].replace('', 'N/A', regex=False)
 						df[column] = df[column].replace('nan', 'N/A', regex=False)
 

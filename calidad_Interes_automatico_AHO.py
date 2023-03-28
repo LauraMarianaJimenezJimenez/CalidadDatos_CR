@@ -80,6 +80,7 @@ try:
 
 					# en_linea_neg_cv
 					if i == 1:
+						df[column] = df[column].astype(str)
 						linea_neg = ['PFS','GBM','CMB']
 						if (~df[column].isin(linea_neg).all()):
 							f.write("\nHay valores que no corresponden a 'PFS','GBM','CMB' ")
@@ -103,13 +104,16 @@ try:
 
 					# hm_fecha
 					if i == 5:
-						#df[column] = pd.to_datetime(df[column])
-						#df[column] = np.where(df[column].str.contains('/'), pd.to_datetime(df[column], errors='coerce').dt.strftime('%d/%m/%Y'), pd.to_datetime(df[column], errors='coerce', dayfirst=True).dt.strftime('%d/%m/%Y'))
-
 						df[column] = df[column].astype(str)
-						df[column] = np.where(df[column].str.contains('/'), pd.to_datetime(df[column], errors='coerce').dt.strftime('%d/%m/%Y'), pd.to_datetime(df[column], errors='coerce', dayfirst=True).dt.strftime('%d/%m/%Y'))
-						if (df[column].str.slice(3, 5) != data_date[4:6]).any():
+						#df[column] = df[column].str.strip()
+						#df[column] = np.where(df[column].str.contains('/'), pd.to_datetime(df[column]).dt.strftime('%m/%d/%Y'), pd.to_datetime(df[column], dayfirst=True).dt.strftime('%m/%d/%Y'))
+						df[column] = df[column].astype(str)
+						if (df[column].str.slice(3, 5)  != data_date[4:6]).any():
 							f.write("\nHay fechas que no corresponden para el mes de ejecución")
+						#print(df[column])
+
+
+
 
 					# hm_valor
 					if i == 6:
