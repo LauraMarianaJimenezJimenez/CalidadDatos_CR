@@ -87,6 +87,7 @@ for column in df:
 		if (df[column].str.slice(3, 5) != data_date[4:6]).any():
 			f.write("\nHay fechas que no corresponden para el mes de ejecución")
 
+	#T. facial			
 	if i == 11:
 		df[column] = df[column].astype(str)
 		df[column] = df[column].str.replace('[^Ee0-9-,.\\s]+', '', regex=True)
@@ -102,6 +103,13 @@ for column in df:
 		if (df[column] <0).any():
 			f.write("\nHay tasas de interes con valor menor a 0%")
 
+	# Moneda
+	if i == 28:
+		df[column] = df[column].astype(str)
+		monedas = ['1','2']
+		if (~df[column].isin(monedas).all()):
+				f.write("\nHay monedas que no corresponden a 1 o 2 ")
+
 	# Garantia , homologación , tipo , emisor, cia
 	if i == 41 or i == 52 or i == 0 or i == 2 or i == 27:
 		df[column] = df[column].astype(str)
@@ -116,9 +124,6 @@ for column in df:
 		df[column] = df[column].replace('nan', '0', regex=False)
 		df[column] = df[column].replace('', '0', regex=False)
 		df[column] = df[column].astype(float)
-
-
-		
 
 	i = i + 1
 

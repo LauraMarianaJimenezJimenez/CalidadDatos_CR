@@ -143,10 +143,9 @@ try:
 			except Exception as e:
 				print(' Ha ocurrido un error, por favor verifique su fuente')
 				print(e)
-		except Exception as e:
+		except:
 			print(' Hay un error en los nombres de las columnas, valide que sean [Trade Date, Time, CCY1, Notional1, Client Price, Close Price, Client Type, Reference Price, PL CM, PL GBM, Total PL, PL CM2, PL GBM2, Total PL2, PL COL CB, Blank, Client Type 2, Criterio, Subsegmento, Ente, CCY, Type], teniendo en cuenta el orden, las mayusculas y minusculas')
-			print(e)
-
+	
 	except Exception as e:
 		print(' Ha ocurrido un error, por favor verifique su fuente')
 		print(e)

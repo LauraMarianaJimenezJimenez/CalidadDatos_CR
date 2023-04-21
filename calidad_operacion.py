@@ -24,8 +24,6 @@ try:
 	df = pd.read_csv(file, header=None, sep='|')
 
 	try:
-		# Se toman el dataframe desde la fila 8 de la fuente para descartar textos informativos
-		print(df.loc[[0]])
 		# Take dataframe
 		df.columns = df.iloc[0]
 		df = df[1:]
@@ -33,8 +31,7 @@ try:
 		# Remove entirely empty row
 		df = df.dropna(how='all')
 		# Remove entirely empty column
-		#df = df.dropna(how='all', axis=1)
-
+		# df = df.dropna(how='all', axis=1)
 		try:
 			# Delete withespace in headers
 			df = df.rename(columns=lambda x: x.strip())
@@ -44,7 +41,6 @@ try:
 			df = df.drop_duplicates()
 
 			try:
-				print(df)
 				# Create output file
 				path = os.path.abspath('../Informes/Informe_Operaciones.txt')
 
@@ -60,10 +56,11 @@ try:
 				# Validate empty cells
 				i = 1
 				for column in df:
-					print(column)
+					#print(column)
+					#print(df[column])
 					text = str(column)
 					f.write("\n")
-					f.write(str(i) + ".")
+					f.write(str(i) + ". ")
 					f.write(text)
 					f.write(": ")
 					text = str(df[column].isnull().sum())
@@ -82,13 +79,16 @@ try:
 				#Remove pipelines, single quote, semicolon
 				df = df.replace(r'\| +|\' +|; +|´ +|\|', '', regex=True)
 
+				#print(df)
+				
 				i = 0
 				for column in df:
+					# print(str(i) + ' entro')
 					# op_cliente as idf_cli
 					# 0-9a-zA-Z
 					if i == 4:
 						df[column] = df[column].astype(str)
-						df[column] = df[column].str.replace('[^0-9a-zA-Z\\s]+', '', regex=True)
+						df[column] = df[column].str.replace('[^0-9a-zA-Z\\s]+', '', regex=True) 
 
 					# OP_ID_OPERACION as idf_cto 
 					# 0-9a-zA-Z (E y N ??)
@@ -98,7 +98,7 @@ try:
 
 					# OP_ID_LINEA
 					# 0-9a-zA-Z (E y N ??)
-					if i == 7:
+					if i == 8:
 						df[column] = df[column].astype(str)
 						df[column] = df[column].str.replace('[^0-9a-zA-Z\\s]+', '', regex=True)
 
@@ -115,7 +115,7 @@ try:
 						df[column] = df[column].str.replace('[^0-9\\s]+', '', regex=True)
 
 						moneda = ['1', '2', '3']
-						if (~df[column].isin(subproductos).all()):
+						if (~df[column].isin(moneda).all()):
 							f.write("\nHay monedas que no corresponden a 1, 2 o 3")
 
 					#OP_CTA_CTBLE_CAP as cod_subproduct
@@ -133,7 +133,7 @@ try:
 						df[column] = df[column].str.replace(',', '.', regex=False)
 						df[column] = df[column].fillna('0')
 						df[column] = df[column].replace('nan', '0', regex=False)
-						df[column] = df[column].replace('', '0', regex=False)
+						df[column] = df[column].replace('', '0', regex=False) 
 						df[column] = df[column].astype(float)
 
 					# op_cta_desem_c as cod_subproduct
@@ -178,7 +178,8 @@ try:
 
 					#OP_FECHA_FORMALIZA as tate_origin 
 					#OP_FECHA_VENCE as exp_date
-					fechas[34, 35, 44, 45, 46, 47, 48, 49, 50]
+					# OP_FCAMB_TASA_V as DATE_PRX_REV
+					fechas =[34, 35, 44, 45, 46, 47, 48, 49, 50, 73]
 					if i in fechas:
 						df[column] = df[column].astype(str)
 						df[column] = np.where(df[column].str.contains('/'), pd.to_datetime(df[column], errors='coerce').dt.strftime('%d/%m/%Y'), pd.to_datetime(df[column], errors='coerce', dayfirst=True).dt.strftime('%d/%m/%Y'))
@@ -196,12 +197,15 @@ try:
 						df[column] = df[column].astype(str)
 						df[column] = df[column].str.replace('[^Ee0-9-,.\\s]+', '', regex=True)
 						df[column] = df[column].str.replace(',', '.', regex=False)
+						df[column] = df[column].fillna('0')
+						df[column] = df[column].replace('nan', '0', regex=False)
+						df[column] = df[column].replace('', '0', regex=False)
 						df[column] = df[column].astype(float)
 
-					if (df[column] < 0).any():
+						if (df[column] < 0).any():
 							f.write("\nHay tasas negativos en la columna OP_TASA_INT_VIG")
 
-					if (df[column] > 100).any():
+						if (df[column] > 100).any():
 							f.write("\nHay tasas mayores que 100 en la columna OP_TASA_INT_VIG")
 
 
@@ -220,8 +224,6 @@ try:
 						df[column] = df[column].str.replace('[^0-9a-zA-Z\\s]+', '', regex=True)
 
 
-					# OP_FCAMB_TASA_V as DATE_PRX_REV
-
 					i = i + 1 
 
 
@@ -233,15 +235,19 @@ try:
 				unix_time = str(unix_time)
 				unix_time = unix_time.split('.')[0]
 
+				
 				# Se escribe un nuevo archivo con la fuente procesada 
+				file = os.path.abspath('../Fuentes_procesadas/Operacion_' + unix_time + '.txt')
+				df.to_csv(file, index=None, sep='|', mode='a')				
+				'''
 
-				file = os.path.abspath('../Fuentes_procesadas/Operacion' + unix_time + '.txt')
-				df.to_csv(file, header=None, index=None, sep=' ', mode='a')
-
+				file = os.path.abspath('../Fuentes_procesadas/Operacion_' + unix_time +'.xlsx')
+				writer = ExcelWriter(file)
+				df.to_excel(writer, 'Hoja de datos', index=False)
+				writer.save()
+				'''
 
 				print("Fuentes procesada con exito")
-
-
 
 
 			except Exception as e:
@@ -259,5 +265,3 @@ try:
 except Exception as e:
 	print(" Hay un error en la fecha ingresada o en el nombre del archivo")
 	print(e)
-
-

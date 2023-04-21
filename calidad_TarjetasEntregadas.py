@@ -15,7 +15,8 @@ try:
 	# Se solicita la fecha del archivo para la creación del path que leera el archivo
 	# Input
 	print("Inserte la fecha de la fuente que desea procesar (yyyymmdd)")
-	data_date = input()
+	#data_date = input()
+	data_date = '20230414'
 	print('Procesando...')
 
 	file = os.path.abspath("../Fuentes_iniciales/TarjetasEntregadas_" + data_date + ".xlsx")
@@ -83,7 +84,7 @@ try:
 							if(len(items[1]) > 13):
 								f.write("\nhay cuentas de tarjetas con longitud mayor de 13")
 								
-							elif (len(items[1]) < 13):
+							if (len(items[1]) < 13):
 								f.write("\nhay cuentas de tarjetas con longitud menor de 13")
 								break
 					# TC
@@ -91,15 +92,15 @@ try:
 						df[column] = df[column].astype(str)
 						df[column] = df[column].str.replace('[^0-9\\s]+', '', regex=True)
 					
-						for items in df['Cuenta TC'].iteritems():
+						for items in df['TC'].iteritems():
 							if(len(items[1]) > 16):
 								f.write("\nhay números de tarjetas con longitud mayor de 16")
 								break
 
-							elif (len(items[1]) < 16):
+							if (len(items[1]) < 16):
+								print(items[1])
 								f.write("\nhay números de tarjeta con longitud menor de 16")
 								break
-
 					# Nombre
 					if i == 2:
 						df[column] = df[column].astype(str)
@@ -112,11 +113,18 @@ try:
 
 					# Tipo
 					if i == 4:
-						df[column] = 'T'
+						df[column] = df[column].astype(str)
+						tipo = ['T']
+						if (~df[column].isin(tipo).all()):
+							f.write("\nHay tipos de tarjetas que no son titulares, son diferentes a 'T'")
+
 
 					# Gestión
 					if i == 5:
-						df[column] = 'NU'
+						df[column] = df[column].astype(str)
+						gestion = ['NU']
+						if (~df[column].isin(gestion).all()):
+							f.write("\nHay tarjetas que no son de nueva produccion, son diferentes a 'NU'")
 
 					# Fecha 
 					if i == 6:
@@ -179,7 +187,7 @@ try:
 							if(len(items[1]) > 6):
 								f.write("\nhay bines con longitud mayor de 6")
 								
-							elif (len(items[1]) < 6):
+							if (len(items[1]) < 6):
 								f.write("\nhay bines con longitud menor de 6")
 								break
 
@@ -192,7 +200,7 @@ try:
 					if i == 16:
 						df[column] = df[column].astype(str)
 						color = ['Black', 'Platino', 'Clásica', 'Bussines', 'Dorada', 'Infinite']
-						if (~df[column].isin(color).all()):
+						if (~df[column].isin(color).any()):
 							f.write("\nHay colores que no corresponden a 'Black', 'Platino', 'Clásica', 'Bussines', 'Dorada', 'Infinite'")
 					
 					# Ente Tarjeta
@@ -231,6 +239,7 @@ try:
 
 		except:
 			print(' Hay un error en los nombres de las columnas, valide que sean [Fecha, Tarjeta, Monto, Moneda, Tipo Tarjeta, Tipo Cuenta], teniendo en cuenta el orden, las mayusculas y minusculas')
+			print(e)
 	
 	except Exception as e:
 		print(' Ha ocurrido un error, por favor verifique su fuente')
@@ -238,5 +247,6 @@ try:
 
 except:
 	print(" Hay un error en la fecha ingresada o en el nombre del archivo")
+	print(e)
 
 	

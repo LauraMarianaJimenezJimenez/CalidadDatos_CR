@@ -148,7 +148,7 @@ try:
 						df[column] = df[column].replace('', '0', regex=False)
 						df[column] = df[column].astype(float)
 
-						if (df[column] <= 0).any():
+						if (df[column] < 0).any():
 							f.write("\nHay importes negativos en la columna Brok_Lob")
 
 					# brok_GM as pl importe de ROF para tesoreria		
@@ -162,7 +162,7 @@ try:
 						df[column] = df[column].replace('', '0', regex=False)
 						df[column] = df[column].astype(float)
 
-						if (df[column] <= 0).any():
+						if (df[column] < 0).any():
 							f.write("\nHay importes negativos en la columna Brok_GM")
 
 

@@ -167,7 +167,7 @@ try:
 				df.rename(columns={"Client Type3": "Client Type"}, inplace=True)
 				df.rename(columns={"Client Type4": "Client Type2"}, inplace=True)
 
-
+				# Generación del flag de validación, marcación de tiempo unix
 				date_time = datetime.datetime.now()      
 				unix_time = time.mktime(date_time.timetuple())
 				unix_time = str(unix_time)

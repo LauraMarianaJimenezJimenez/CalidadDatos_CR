@@ -14,8 +14,8 @@ warnings.filterwarnings("ignore")
 try:
 	# Input
 	print("Inserte la fecha de la fuente que desea procesar")
-	data_date = input()
-	#data_date = '20230117'
+	#data_date = input()
+	data_date = '20230117'
 
 	print('Procesando...')
 
@@ -55,6 +55,8 @@ try:
 
 		f.write("\nCantidad de datos vacios por cada columna del archivo")
 
+		print(df['Desc.Tasa'])
+
 		# Validate empty cells
 		for column in df:
 			text = str(column)
@@ -64,7 +66,9 @@ try:
 			text = str(df[column].isnull().sum())
 			f.write(text)
 			df[column] = df[column].astype(str)
+			#df[column] = df[column].str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')
 
+		print(df['Desc.Tasa'])
 
 
 		# Se realizan las reglas de calidad generales en la estructura del archivo, esto incluye eliminar filas vacias, saltos de linea, carring return y caracteres 
@@ -104,7 +108,8 @@ try:
 			# Vencimiento as exp_date
 			if i == 6  or i == 7 or i == 14:
 				df[column] = df[column].astype(str)
-				df[column] = np.where(df[column].str.contains('/'), pd.to_datetime(df[column], errors='coerce').dt.strftime('%d/%m/%Y'), pd.to_datetime(df[column], errors='coerce', dayfirst=True).dt.strftime('%d/%m/%Y'))
+				#df[column] = np.where(df[column].str.contains('/'), pd.to_datetime(df[column], errors='coerce').dt.strftime('%d/%m/%Y'), pd.to_datetime(df[column], errors='coerce', dayfirst=True).dt.strftime('%d/%m/%Y'))
+				df[column] = df[column].str.replace('[^/0-9\\s]+', '', regex=True)
 				df[column] = df[column].astype(str)
 
 			# Facial as eopbal_cap Primas por Bonos y Papeles Colones/Dolares
@@ -141,7 +146,7 @@ try:
 
 			if i == 26 or i == 33:
 				df[column] = df[column].astype(str)
-				df[column] = np.where(df[column].str.contains('/'), pd.to_datetime(df[column], errors='coerce').dt.strftime('%d/%m/%Y'), pd.to_datetime(df[column], errors='coerce', dayfirst=True).dt.strftime('%d/%m/%Y'))
+				f[column] = df[column].str.replace('[^/0-9\\s]+', '', regex=True)
 				df[column] = df[column].astype(str)
 
 			# Moneda as cod_currency
@@ -172,10 +177,10 @@ try:
 		unix_time = unix_time.split('.')[0]
 
 		# Se escribe un nuevo archivo con la fuente procesada 
-
+		'''
 		file = os.path.abspath('../Fuentes_procesadas/Estado_de_Portafolio_124_' + data_date + '_' + unix_time + '.csv')
 		df.to_csv(file, index=False)
-
+		'''
 		print("Fuentes procesada con exito")
 
 	except Exception as e:
@@ -184,6 +189,7 @@ try:
 
 except:
 	print(" Hay un error en la fecha ingresada o en el nombre del archivo")
+	print(e)
 
 
 
